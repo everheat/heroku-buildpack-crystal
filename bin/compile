@@ -70,6 +70,6 @@ finished
 NO_DEBUG_IF_AVAILABLE=`crystal build --help | grep -q -- --no-debug && echo -n --no-debug`
 
 start "Compiling crystal application"
-  crystal build --release
+  shards build --release
 finished
 
