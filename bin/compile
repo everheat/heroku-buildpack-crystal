@@ -41,6 +41,10 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
 
+export LIBRARY_PATH=/app/.heroku/vendor/lib:$BUILD_DIR/.heroku/vendor/lib:/app/.heroku/python/lib:$LIBRARY_PATH
+export LD_LIBRARY_PATH=/app/.heroku/vendor/lib:$BUILD_DIR/.heroku/vendor/lib:/app/.heroku/python/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=/app/.heroku/vendor/lib/pkg-config:$BUILD_DIR/.heroku/vendor/lib/pkg-config:/app/.heroku/python/lib/pkg-config:$PKG_CONFIG_PATH
+
 if [ -f $BUILD_DIR/.crystal-version ]; then
   CRYSTAL_VERSION=`cat $BUILD_DIR/.crystal-version | tr -d '\012'`
   CRYSTAL_VERSION_REASON='due to .crystal-version file'
@@ -63,13 +67,7 @@ PATH="${PATH}:${CRYSTAL_DIR}/bin:${CRYSTAL_DIR}/embedded/bin/"
 # Build the project
 cd $BUILD_DIR
 
-start "Installing Dependencies"
-  shards --production
-finished
-
-NO_DEBUG_IF_AVAILABLE=`crystal build --help | grep -q -- --no-debug && echo -n --no-debug`
-
 start "Compiling crystal application"
-  shards build --release
+  shards build --release --production
 finished
 
